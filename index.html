@@ -10,8 +10,8 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#f7f7f5" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141414" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#dedcd6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#211f1d" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Alarifi Group">
 <meta property="og:title" content="Alarifi Group">
@@ -21,48 +21,65 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preload" href="assets/alexandria-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/michroma-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/readex-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/reddot-screen.jpg" as="image">
 <link rel="stylesheet" href="assets/site.css">
 <script src="assets/site.js" defer></script>
 </head>
 <body>
-<button class="lang" type="button" data-toggle-lang><span data-when="en" lang="ar">العربية</span><span data-when="ar" lang="en">English</span></button>
-<header class="hero">
-  <h1 class="mark"><span class="sr">Alarifi Group</span><span aria-hidden="true">alarifi<span class="dot">.</span>group</span></h1>
-  <p class="lead"><span data-when="en">We make simple apps and games.</span><span data-when="ar" lang="ar">نصنع تطبيقات وألعابًا بسيطة.</span></p>
+<header class="top wrap">
+  <a class="mark" href="./"><span class="sr">Alarifi Group</span><span aria-hidden="true" dir="ltr">alarifi<span class="dot">.</span>group</span></a>
+  <button class="key key-pill key-desk" type="button" data-toggle-lang><span class="key-face"><span class="key-text"><span data-when="en" lang="ar">العربية</span><span data-when="ar" lang="en">English</span></span></span></button>
 </header>
-<main class="wrap">
-  <h2 class="sr"><span data-when="en">Apps</span><span data-when="ar" lang="ar">التطبيقات</span></h2>
-  <article class="app">
-    <span class="badge"><span data-when="en">iPhone</span><span data-when="ar" lang="ar">آيفون</span></span>
-    <div class="app-body">
-      <img class="icon" src="assets/reddot-icon.jpg" width="112" height="112" alt="">
-      <h3><a href="reddot/"><span data-when="en">Red Dot: Cat Laser Chase</span><span data-when="ar" lang="ar">النقطة الحمراء: مطاردة القط</span></a></h3>
-      <p data-when="en">You're the laser pointer. Basbousa the cat wants the dot. Keep him chasing, never let him catch it, and never let him get bored.</p><p data-when="ar" lang="ar">أنت مؤشر الليزر. بسبوسة القط يبغى النقطة. خلّه يطارد، لا تخليه يمسكها، ولا تخليه يملّ.</p>
+<main class="home wrap">
+  <section class="intro">
+    <h1><span data-when="en">One game. One finger.</span><span data-when="ar" lang="ar">لعبة واحدة. إصبع واحد.</span></h1>
+    <p class="lede" data-when="en">We make simple apps and games. Red Dot is the first: you're the laser pointer, and Basbousa the cat wants the dot.</p><p class="lede" data-when="ar" lang="ar">نصنع تطبيقات وألعابًا بسيطة. النقطة الحمراء أولها: أنت مؤشر الليزر، وبسبوسة القط يبغى النقطة.</p>
+    <p class="hint" data-when="en">The big button opens Red Dot on the App Store.</p><p class="hint" data-when="ar" lang="ar">الزر الكبير يفتح النقطة الحمراء في App Store.</p>
+  </section>
+  <div class="stage">
+<div class="console">
+  <a class="cart" href="reddot/">
+      <span class="cart-label">
+        <span class="cart-name"><span data-when="en">Red Dot</span><span data-when="ar" lang="ar">النقطة الحمراء</span></span>
+        <img class="cart-art" src="assets/reddot-art.jpg" width="480" height="480" alt="">
+        <span class="cart-sub"><span data-when="en">Cat Laser Chase</span><span data-when="ar" lang="ar">مطاردة القط</span></span>
+      </span>
+    </a>
+  <div class="dev">
+    <div class="bezel">
+      <span class="led" aria-hidden="true"></span>
+      <div class="lcd"><img data-when="en" src="assets/reddot-screen.jpg" width="600" height="845" alt="Red Dot gameplay: Basbousa the cat chasing the red laser dot across a rug"><img data-when="ar" src="assets/reddot-screen.jpg" width="600" height="845" alt="لقطة من النقطة الحمراء: بسبوسة القط يطارد نقطة الليزر الحمراء"></div>
     </div>
-    <nav class="app-links" aria-label="Red Dot">
-      <a href="https://apps.apple.com/app/id6824105925">App Store</a>
-      <a href="reddot/support"><span data-when="en">Support</span><span data-when="ar" lang="ar">الدعم</span></a>
-      <a href="reddot/privacy"><span data-when="en">Privacy</span><span data-when="ar" lang="ar">الخصوصية</span></a>
+    <p class="brand" aria-hidden="true"><span>Alarifi Group</span></p>
+    <a class="key key-play" href="https://apps.apple.com/app/id6824105925">
+      <span class="key-face"><span class="key-text"><span data-when="en">Play</span><span data-when="ar" lang="ar">العب</span></span><span class="sr" data-when="en"> Red Dot on the </span><span class="sr" data-when="ar" lang="ar"> النقطة الحمراء من </span><span class="key-sub">App Store</span></span>
+    </a>
+    <nav class="dev-keys" aria-label="Red Dot">
+      <a class="key key-pill" href="reddot/support"><span class="key-face"><span class="key-text"><span data-when="en">Support</span><span data-when="ar" lang="ar">الدعم</span></span></span></a>
+      <a class="key key-pill" href="reddot/privacy"><span class="key-face"><span class="key-text"><span data-when="en">Privacy</span><span data-when="ar" lang="ar">الخصوصية</span></span></span></a>
     </nav>
-  </article>
-  <p class="soon" data-when="en">More apps are on the way.</p><p class="soon" data-when="ar" lang="ar">تطبيقات أخرى في الطريق.</p>
-  <div class="contact">
-    <a class="pill" href="mailto:nawaf@alarifi.group"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg><bdi>nawaf@alarifi.group</bdi></a>
+    <span class="grille" aria-hidden="true"></span>
+  </div>
+</div>
   </div>
 </main>
 <footer class="foot">
-  <p>© 2026 <span data-when="en">Alarifi Group</span><span data-when="ar" lang="ar">مجموعة العريفي</span></p>
-  <nav aria-label="Footer">
-    <a href="reddot/"><span data-when="en">Red Dot</span><span data-when="ar" lang="ar">النقطة الحمراء</span></a>
-    <a href="reddot/support"><span data-when="en">Support</span><span data-when="ar" lang="ar">الدعم</span></a>
-    <a href="reddot/privacy"><span data-when="en">Privacy</span><span data-when="ar" lang="ar">الخصوصية</span></a>
-    <a href="mailto:nawaf@alarifi.group"><span data-when="en">Contact</span><span data-when="ar" lang="ar">تواصل معنا</span></a>
-  </nav>
-  <div class="theme" role="group" aria-label="Theme">
-    <button type="button" data-set-theme="auto" aria-pressed="true"><span data-when="en">Auto</span><span data-when="ar" lang="ar">تلقائي</span></button>
-    <button type="button" data-set-theme="light" aria-pressed="false"><span data-when="en">Light</span><span data-when="ar" lang="ar">فاتح</span></button>
-    <button type="button" data-set-theme="dark" aria-pressed="false"><span data-when="en">Dark</span><span data-when="ar" lang="ar">داكن</span></button>
+  <div class="foot-in wrap">
+    <p>© 2026 <span data-when="en">Alarifi Group</span><span data-when="ar" lang="ar">مجموعة العريفي</span></p>
+    <ul class="foot-links">
+      <li><a href="reddot/"><span data-when="en">Red Dot</span><span data-when="ar" lang="ar">النقطة الحمراء</span></a></li>
+      <li><a href="reddot/support"><span data-when="en">Support</span><span data-when="ar" lang="ar">الدعم</span></a></li>
+      <li><a href="reddot/privacy"><span data-when="en">Privacy</span><span data-when="ar" lang="ar">الخصوصية</span></a></li>
+      <li><a href="mailto:nawaf@alarifi.group"><bdi>nawaf@alarifi.group</bdi></a></li>
+    </ul>
+    <div class="switch" role="group" aria-label="Theme">
+      <button type="button" data-set-theme="auto" aria-pressed="true"><span data-when="en">Auto</span><span data-when="ar" lang="ar">تلقائي</span></button>
+      <button type="button" data-set-theme="light" aria-pressed="false"><span data-when="en">Light</span><span data-when="ar" lang="ar">فاتح</span></button>
+      <button type="button" data-set-theme="dark" aria-pressed="false"><span data-when="en">Dark</span><span data-when="ar" lang="ar">داكن</span></button>
+      <span class="switch-knob" aria-hidden="true"></span>
+    </div>
   </div>
 </footer>
 </body>
