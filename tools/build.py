@@ -6,11 +6,19 @@ Adding an app later: add an entry to APPS with its slug, store link, texts and t
 plus its support and privacy content. The first app sits in the handheld on the home page;
 every other app waits beside it as a cartridge linking to its own page.
 """
+import hashlib
 import sys
 from pathlib import Path
 
 OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent.parent
 EMAIL = 'nawaf@alarifi.group'
+
+
+def asset_version(name):
+    """Short content hash, so a changed stylesheet or script is never served from an old cache."""
+    return hashlib.sha256((OUT / 'assets' / name).read_bytes()).hexdigest()[:10]
+
+
 YEAR = 2026
 
 HEAD_SCRIPT = (
@@ -93,8 +101,8 @@ def page(*, path, root, title_en, title_ar, desc, canonical, body, extra_head=''
 <meta name="twitter:card" content="summary_large_image">
 {extra_head}<link rel="preload" href="{root}assets/michroma-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{root}assets/readex-latin.woff2" as="font" type="font/woff2" crossorigin>
-{preloads}<link rel="stylesheet" href="{root}assets/site.css">
-<script src="{root}assets/site.js" defer></script>
+{preloads}<link rel="stylesheet" href="{root}assets/site.css?v={asset_version('site.css')}">
+<script src="{root}assets/site.js?v={asset_version('site.js')}" defer></script>
 </head>
 <body>
 <header class="top wrap">
