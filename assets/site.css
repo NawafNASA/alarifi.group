@@ -240,6 +240,9 @@ html[lang="en"] [data-when="ar"], html[lang="ar"] [data-when="en"] { display: no
 .cart-name > span { font: 400 1.45em/1 var(--display); letter-spacing: .18em; padding-inline-start: .18em; text-transform: uppercase; }
 .cart-name > [lang="ar"] { font-size: 1.7em; font-weight: 600; padding: 0; }
 .cart-art { flex: none; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.cart-art-type { display: grid; place-items: center; color: #1f2a31; }
+.cart-art-type > [lang="ar"] { font: 700 6.2em/1 var(--text); }
+.cart-art-type > [lang="en"] { font: 400 2.2em/1 var(--display); letter-spacing: .12em; text-transform: uppercase; padding-inline-start: .12em; }
 .cart-sub { flex: 1; display: grid; place-items: center; color: var(--object-ink-2); }
 .cart-sub > span { font: 400 .9em/1 var(--display); letter-spacing: .24em; padding-inline-start: .24em; text-transform: uppercase; }
 .cart-sub > [lang="ar"] { font-size: 1.2em; font-weight: 500; padding: 0; }
@@ -270,11 +273,18 @@ html[lang="en"] [data-when="ar"], html[lang="ar"] [data-when="en"] { display: no
 .home .lcd img { animation: power-on .7s var(--ease-out) .9s backwards; }
 .home .led { animation: led-on .01s linear .9s backwards; }
 
-/* more apps: every other app waits on the desk as a cartridge */
-.rack { list-style: none; padding: 0; margin: 34px 0 0; display: flex; flex-wrap: wrap; gap: 18px; }
-.rack .cart { position: relative; left: auto; top: auto; margin: 0; display: block; font-size: 5px;
-  box-shadow: inset 0 .14em 0 rgba(255, 255, 255, .16), inset 0 -.3em .6em rgba(0, 0, 0, .35), 0 1.6em 2.4em -1.2em var(--shadow); }
-.rack .cart:hover { transform: translateY(-3px); }
+/* more apps: every other app lies on the desk next to the handheld, as a cartridge */
+.home .stage.has-rack { display: flex; align-items: flex-end; gap: calc(var(--u) * 36); margin-inline-end: clamp(0px, 3vw, 48px); }
+.rack { list-style: none; margin: 0; padding: 0 0 calc(var(--u) * 26); display: flex; flex-direction: column; gap: 22px; }
+.rack li { display: grid; justify-items: center; gap: 16px; }
+.rack .cart {
+  position: relative; left: auto; top: auto; margin: 0; display: block; font-size: calc(var(--u) * 8);
+  transform: rotate(-5deg);
+  box-shadow: inset 0 .14em 0 rgba(255, 255, 255, .16), inset 0 -.3em .6em rgba(0, 0, 0, .35),
+    0 2.6em 3.2em -1.8em var(--shadow), 0 .5em 1em -.5em rgba(0, 0, 0, .3);
+}
+.rack .cart:hover, .rack .cart:focus-visible { transform: rotate(-2deg) translateY(-.7em); }
+.rack-note { font: 600 13px/1 var(--text); color: var(--ink-3); }
 
 /* ---------- App page ---------- */
 .app-page {
@@ -303,6 +313,10 @@ html[lang="en"] [data-when="ar"], html[lang="ar"] [data-when="en"] { display: no
 .spec dt [lang="ar"] { font-size: 14px; font-weight: 600; }
 .spec dd { font-size: 16px; }
 .app-links { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 12px 14px; }
+.app-soon {
+  display: inline-flex; align-items: center; min-height: 52px; padding: 0 26px; border-radius: 999px;
+  border: 1.5px dashed var(--ink-3); color: var(--ink-2); font: 600 16px/1.2 var(--text);
+}
 
 /* ---------- Support and privacy: a sheet on the desk ---------- */
 .doc-page { flex: 1; padding-block: 10px 64px; }
@@ -313,7 +327,7 @@ html[lang="en"] [data-when="ar"], html[lang="ar"] [data-when="en"] { display: no
 }
 .sheet-head {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px 24px;
-  padding: 20px clamp(20px, 4vw, 44px) 22px; background: var(--red-flat); color: #fff;
+  padding: 20px clamp(20px, 4vw, 44px) 22px; background: var(--band, var(--red-flat)); color: #fff;
   box-shadow: inset 0 2px 0 rgba(255, 255, 255, .22);
 }
 .sheet-app { display: flex; align-items: center; gap: 14px; color: #fff; text-decoration: none; }
@@ -342,6 +356,25 @@ html[lang="en"] [data-when="ar"], html[lang="ar"] [data-when="en"] { display: no
 .qa { list-style: none; padding: 0; margin: 26px 0 32px; border-top: 1px solid var(--paper-rule); }
 .qa li { padding: 16px 0; border-bottom: 1px solid var(--paper-rule); }
 .qa b { font-weight: 600; }
+.sheet-body strong { font-weight: 600; }
+.nobr { white-space: nowrap; }
+
+/* bilingual documents: Arabic first, right to left, English underneath */
+.sheet-body > .doc-part { max-width: none; }
+.doc-part > * { max-width: 65ch; }
+.doc-part[lang="ar"] { line-height: 1.85; }
+.doc-part + .doc-part { margin-top: 46px; padding-top: 36px; border-top: 1px solid var(--paper-rule); }
+.doc-brand { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; margin-bottom: 6px; }
+.sheet-body .doc-brand h1 { margin: 0; font: 700 clamp(34px, 4.4vw, 46px)/1.3 var(--text); letter-spacing: 0; }
+.doc-latin { font: 400 13px/1 var(--display); letter-spacing: .28em; color: var(--paper-ink-2); }
+.sheet-body .lead { margin: 2px 0 26px; font-size: 19px; line-height: 1.7; }
+.doc-brand + .meta { margin: 0 0 26px; }
+.doc-part h2:first-child { margin-top: 0; }
+.doc-part[lang="en"] > h2:first-child { font: 400 22px/1.3 var(--display); letter-spacing: -.005em; }
+.doc-part h2 + .meta { margin: -2px 0 18px; }
+.doc-list { margin: 0 0 18px; padding-inline-start: 1.3em; }
+.doc-list li { margin: 0 0 10px; padding-inline-start: .2em; }
+.doc-list li::marker { color: var(--paper-ink-2); }
 
 /* ---------- 404 ---------- */
 .lost { flex: 1; display: grid; grid-template-columns: auto minmax(0, 24rem); align-items: center; justify-content: center; gap: clamp(32px, 6vw, 88px); padding-block: 24px 56px; }
@@ -382,6 +415,8 @@ html[lang="en"] [data-when="ar"], html[lang="ar"] [data-when="en"] { display: no
   .home { grid-template-columns: minmax(0, 1fr); gap: 4px; padding-block: 10px 32px; }
   .home { min-height: 0; }
   .home .stage { --u: clamp(.6px, calc((100vw - 40px) / 400), .84px); --drop: 5.4em; margin-inline-end: 0; padding-top: 44px; }
+  .home .stage.has-rack { flex-direction: column; align-items: center; margin-inline-end: 0; gap: 34px; }
+  .rack { flex-direction: row; padding: 0; }
   .lede { max-width: 40ch; }
   .hint { margin-top: 18px; }
   .app-page { grid-template-columns: minmax(0, 1fr); gap: 8px; padding-top: 4px; }

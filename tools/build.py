@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Generates the alarifi.group pages (handheld design). Run from anywhere: python3 tools/build.py
 
-Adding an app later: add an entry to APPS with its slug, store link, texts and two images
-(assets/<slug>-art.jpg for the cartridge label, assets/<slug>-screen.jpg for the device screen),
-plus its support and privacy content. The first app sits in the handheld on the home page;
-every other app waits beside it as a cartridge linking to its own page.
+Adding an app: add an entry to APPS with its slug, store link (None until it is live), texts and
+images (assets/<slug>-art.jpg for the cartridge label, assets/<slug>-icon.jpg for the page header,
+and assets/<slug>-screen.jpg if it will ever sit in the handheld), plus its support and privacy
+pages. The first app sits in the handheld on the home page; every other app waits beside it as a
+cartridge linking to its own page.
 """
 import hashlib
 import sys
@@ -67,6 +68,30 @@ APPS = [
         screen_alt=('Red Dot gameplay: Basbousa the cat chasing the red laser dot across a rug',
                     'لقطة من النقطة الحمراء: بسبوسة القط يطارد نقطة الليزر الحمراء'),
         desc="You're the laser pointer. Basbousa the cat wants the dot. Red Dot: Cat Laser Chase for iPhone, by Alarifi Group.",
+    ),
+    dict(
+        slug='ansure',
+        store=None,  # not on the App Store yet; becomes 'https://apps.apple.com/app/id6802869721' once live
+        app_id='6802869721',
+        name=('Ansure', 'أنشر'),
+        subtitle=('Scorekeeper', 'سجل الصكة'),
+        full=('Ansure', 'أنشر: سجل الصكة'),
+        pitch=('Ansure (أنشر) is a scorekeeping app for Baloot, Bint Al-Sabeet and Trix.',
+               'أنشر تطبيق لتسجيل نتائج البلوت وبنت السبيت وتريكس.'),
+        more=('There are no accounts, no sign-in and no servers of our own: your scores and settings stay on your device.',
+              'لا حسابات، ولا تسجيل دخول، ولا خوادم خاصة بنا: نتائجك وإعداداتك تبقى على جهازك فقط.'),
+        facts=[
+            (('Price', 'السعر'), ('Free, with a one-time Remove Ads purchase', 'مجاني، مع شراء لمرة واحدة لإزالة الإعلانات')),
+            (('Games', 'الألعاب'), ('Baloot, Bint Al-Sabeet and Trix', 'بلوت وبنت السبيت وتريكس')),
+            (('Account', 'الحساب'), ('None, no sign-in', 'لا حسابات ولا تسجيل دخول')),
+            (('Your scores', 'نتائجك'), ('Stay on your device', 'تبقى على جهازك')),
+            (('Platform', 'المنصة'), ('iOS', 'iOS')),
+        ],
+        # the app's own colours, taken from its support and privacy pages
+        cart_style='--plastic-hi:#34444d;--plastic:#1f2a31;--plastic-lo:#141b20;--label:#eef2f4',
+        art_bg='#b8c8d0',
+        band='#bf181b',
+        desc='Ansure (أنشر) is a scorekeeping app for Baloot, Bint Al-Sabeet and Trix, by Alarifi Group.',
     ),
 ]
 
@@ -147,15 +172,26 @@ def footer_links(root):
 
 
 # ---------------------------------------------------------------- objects
+def has_asset(name):
+    return (OUT / 'assets' / name).exists()
+
+
 def cartridge(app, root, link=True):
     """An app as a cartridge. As a link it opens the app's page; otherwise it is a picture (aria-hidden)."""
     s = app['slug']
-    open_tag = f'<a class="cart" href="{root}{s}/">' if link else '<div class="cart" aria-hidden="true">'
+    style = f' style="{app["cart_style"]}"' if app.get('cart_style') else ''
+    open_tag = f'<a class="cart" href="{root}{s}/"{style}>' if link else f'<div class="cart" aria-hidden="true"{style}>'
     close_tag = '</a>' if link else '</div>'
+    if has_asset(f'{s}-art.jpg'):
+        art = f'<img class="cart-art" src="{root}assets/{s}-art.jpg" width="480" height="480" alt="">'
+    else:
+        # no label art yet: the name in the other language, so the label never repeats itself
+        art = (f'<span class="cart-art cart-art-type" style="background:{app.get("art_bg", "#d8cebd")}" aria-hidden="true">'
+               f'<span data-when="en" lang="ar">{app["name"][1]}</span><span data-when="ar" lang="en">{app["name"][0]}</span></span>')
     return f'''{open_tag}
       <span class="cart-label">
         <span class="cart-name">{tt(app['name'])}</span>
-        <img class="cart-art" src="{root}assets/{s}-art.jpg" width="480" height="480" alt="">
+        {art}
         <span class="cart-sub">{tt(app['subtitle'])}</span>
       </span>
     {close_tag}'''
@@ -199,20 +235,23 @@ def build_home():
     first, others = APPS[0], APPS[1:]
     rack = ''
     if others:
-        carts = '\n'.join(f'      <li>{cartridge(a, "")}</li>' for a in others)
+        carts = '\n'.join(
+            f'      <li>{cartridge(a, "")}'
+            + ('' if a['store'] else t('Coming soon', 'قريبًا', 'span', 'class="rack-note"'))
+            + '</li>' for a in others)
         rack = f'''
-    <ul class="rack">
+  <ul class="rack">
 {carts}
-    </ul>'''
+  </ul>'''
     body = f'''<main class="home wrap">
   <section class="intro">
     <h1>{t('One game. One finger.', 'لعبة واحدة. إصبع واحد.')}</h1>
     {t("We make simple apps and games. Red Dot is the first: you're the laser pointer, and Basbousa the cat wants the dot.",
        'نصنع تطبيقات وألعابًا بسيطة. النقطة الحمراء أولها: أنت مؤشر الليزر، وبسبوسة القط يبغى النقطة.', 'p', 'class="lede"')}
-    {t('The big button opens Red Dot on the App Store.', 'الزر الكبير يفتح النقطة الحمراء في App Store.', 'p', 'class="hint"')}{rack}
+    {t('The big button opens Red Dot on the App Store.', 'الزر الكبير يفتح النقطة الحمراء في App Store.', 'p', 'class="hint"')}
   </section>
-  <div class="stage">
-{handheld(first, '')}
+  <div class="stage{' has-rack' if others else ''}">
+{handheld(first, '')}{rack}
   </div>
 </main>'''
     page(path='index.html', root='', title_en='Alarifi Group', title_ar='مجموعة العريفي',
@@ -226,6 +265,12 @@ def build_app(app):
     s = app['slug']
     facts = '\n'.join(f'      <div><dt>{tt(k)}</dt><dd>{tt(v) if v[0] != v[1] else v[0]}</dd></div>'
                       for k, v in app['facts'])
+    if app['store']:
+        get_it = (f'<a class="key key-cream" href="{app["store"]}"><span class="key-face"><span class="key-text">'
+                  f'{t("Get it on the App Store", "حمّلها من App Store")}</span></span></a>')
+    else:
+        get_it = f'<p class="app-soon">{t("Coming soon to the App Store", "قريبًا على App Store")}</p>'
+    more = tt(app['more'], 'p', 'class="more"') if app.get('more') else ''
     body = f'''<main class="app-page wrap">
   <div class="app-object">
     {cartridge(app, '../', link=False)}
@@ -233,9 +278,9 @@ def build_app(app):
   <section class="app-info">
     <h1>{tt(app['name'])}<span class="sr">: </span><span class="h1-sub">{tt(app['subtitle'])}</span></h1>
     {tt(app['pitch'], 'p', 'class="lede"')}
-    {tt(app['more'], 'p', 'class="more"')}
+    {more}
     <div class="app-actions">
-      <a class="key key-cream" href="{app['store']}"><span class="key-face"><span class="key-text">{t('Get it on the App Store', 'حمّلها من App Store')}</span></span></a>
+      {get_it}
     </div>
     <dl class="spec">
 {facts}
@@ -248,18 +293,21 @@ def build_app(app):
 </main>'''
     page(path=f'{s}/index.html', root='../', title_en=app['full'][0], title_ar=app['full'][1],
          desc=app['desc'], canonical=f'https://alarifi.group/{s}/', body=body,
-         extra_head=f'<meta name="apple-itunes-app" content="app-id={app["app_id"]}">\n')
+         extra_head=f'<meta name="apple-itunes-app" content="app-id={app["app_id"]}">\n' if app['store'] else '')
 
 
 # ---------------------------------------------------------------- support / privacy
 def sheet(app, current, content):
     sup = ' aria-current="page"' if current == 'support' else ''
     pri = ' aria-current="page"' if current == 'privacy' else ''
+    band = f' style="--band:{app["band"]}"' if app.get('band') else ''
+    icon = (f'<img src="../assets/{app["slug"]}-icon.jpg" width="48" height="48" alt="">'
+            if has_asset(f'{app["slug"]}-icon.jpg') else '')
     return f'''<main class="doc-page wrap">
-  <article class="sheet">
+  <article class="sheet"{band}>
     <header class="sheet-head">
       <a class="sheet-app" href="./">
-        <img src="../assets/{app['slug']}-icon.jpg" width="48" height="48" alt="">
+        {icon}
         <span><b>{tt(app['full'])}</b><small>{t('Alarifi Group', 'مجموعة العريفي')}</small></span>
       </a>
       <nav class="sheet-tabs" aria-label="{app['name'][0]}">
@@ -324,6 +372,119 @@ def build_reddot_docs(app):
          canonical='https://alarifi.group/reddot/privacy', body=sheet(app, 'privacy', privacy))
 
 
+# ---------------------------------------------------------------- Ansure support / privacy
+# Arabic first, right to left, with the English section underneath, as Boss wrote them.
+# Generated once from the files Boss sent on 29 Oct 2026 (text unchanged).
+ANSURE_SUPPORT_AR = '''\
+        <div class="doc-brand"><h1>أنشر</h1><span class="doc-latin" lang="en" dir="ltr">ANSURE</span></div>
+        <p class="lead">سجل الصكة: حاسبة بلوت وبنت السبيت وتريكس، بلا حسابات وبلا إنترنت.</p>
+        <h2>الدعم</h2>
+        <p>واجهت مشكلة أو عندك اقتراح؟ راسلنا على <a href="mailto:nawaf@alarifi.group">nawaf@alarifi.group</a> واذكر نوع الجهاز وإصدار iOS، وإن أمكن صورة للشاشة.</p>
+        <ul class="qa">
+          <li><strong>الإعلانات لا تختفي بعد الشراء؟</strong> افتح الملف الشخصي واضغط "استعادة المشتريات" وأنت مسجّل بنفس Apple ID.</li>
+          <li><strong>تنبيه أوقات الصلاة لا يظهر؟</strong> يحتاج إذن الموقع (أثناء الاستخدام) من إعدادات iOS، ويظهر فقط والتطبيق مفتوح.</li>
+          <li><strong>ضاعت نتائجي؟</strong> النتائج محفوظة على الجهاز نفسه فقط؛ حذف التطبيق يحذفها معه.</li>
+        </ul>
+        <h2>الخصوصية</h2>
+        <p>كل شيء على جهازك. التفاصيل في <a href="privacy">سياسة الخصوصية</a>.</p>
+'''
+
+ANSURE_SUPPORT_EN = '''\
+        <h2>Support (English)</h2>
+        <p>Questions or problems? Email <a href="mailto:nawaf@alarifi.group">nawaf@alarifi.group</a> with your device model and iOS version. Privacy policy: <a href="privacy">privacy.html</a>.</p>
+'''
+
+ANSURE_PRIVACY_AR = '''\
+        <div class="doc-brand"><h1>أنشر</h1><span class="doc-latin" lang="en" dir="ltr">ANSURE</span></div>
+        <p class="meta">سياسة الخصوصية · آخر تحديث: 26 أكتوبر 2026</p>
+        <h2>باختصار</h2>
+        <p>أنشر تطبيق لتسجيل نتائج البلوت وبنت السبيت وتريكس. لا حسابات، ولا تسجيل دخول، ولا خوادم خاصة بنا: نتائجك وإعداداتك تبقى على جهازك فقط. الشيء الوحيد الذي يتصل بالإنترنت هو الإعلانات في النسخة المجانية.</p>
+
+        <h2>ما الذي يبقى على جهازك</h2>
+        <ul class="doc-list">
+          <li><strong>النتائج والسجل والإحصائيات:</strong> تُحفظ في ذاكرة التطبيق على جهازك، ولا تُرسل إلى أي جهة.</li>
+          <li><strong>الموقع (اختياري):</strong> إن فعّلت "تنبيه أوقات الصلاة" يطلب التطبيق إذن الموقع لحساب أوقات الصلاة على الجهاز نفسه. الموقع لا يغادر الجهاز، ويمكنك تعطيل الميزة أو سحب الإذن في أي وقت من إعدادات iOS.</li>
+          <li><strong>الكاميرا والصور (اختياري):</strong> "صور مع الأكة" تلتقط صورتك بعد الفوز وتحفظها في ألبوم الصور لديك. الصور لا تُرفع إلى أي مكان.</li>
+        </ul>
+
+        <h2>الإعلانات</h2>
+        <p>تعرض النسخة المجانية إعلانات عبر Google AdMob. قد تجمع Google عند عرض الإعلان معرّف الإعلان الخاص بالجهاز (إن سمحت بالتتبع)، وعنوان IP، ومعلومات عن الجهاز والإعلانات التي شاهدتها، وفق <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة خصوصية Google</a>. عند أول تشغيل يسألك iOS إن كنت تسمح بالتتبع؛ إن رفضت تُعرض إعلانات غير مخصصة. يمكنك تغيير ذلك لاحقاً من إعدادات iOS › الخصوصية والأمان › التتبع.</p>
+
+        <h2>إزالة الإعلانات</h2>
+        <p>شراء "إزالة الإعلانات" يتم عبر Apple داخل التطبيق. لا نستلم أي بيانات دفع؛ يُحفظ على جهازك فقط أن الشراء تم، ويمكن استعادته على أي جهاز بنفس Apple ID من زر "استعادة المشتريات".</p>
+
+        <h2>ما لا نفعله</h2>
+        <ul class="doc-list">
+          <li>لا نجمع أسماء اللاعبين أو النتائج أو أي بيانات شخصية.</li>
+          <li>لا نستخدم أدوات تحليلات أو تتبّع من طرفنا.</li>
+          <li>لا نبيع أي بيانات، ولا نشاركها مع أي جهة عدا ما تجمعه Google لعرض الإعلانات كما هو موضح أعلاه.</li>
+        </ul>
+
+        <h2>الأطفال</h2>
+        <p>التطبيق غير موجّه للأطفال دون 13 عاماً، ولا نجمع عن قصد أي بيانات منهم.</p>
+
+        <h2>التغييرات</h2>
+        <p>إن تغيّرت هذه السياسة سننشر النسخة الجديدة هنا مع تاريخ التحديث.</p>
+
+        <h2>تواصل معنا</h2>
+        <p>لأي سؤال عن الخصوصية: <a href="mailto:nawaf@alarifi.group">nawaf@alarifi.group</a></p>
+'''
+
+ANSURE_PRIVACY_EN = '''\
+        <h2>Privacy Policy (English)</h2>
+        <p class="meta">Last updated: October 26, 2026</p>
+        <p>Ansure (أنشر) is a scorekeeping app for Baloot, Bint Al-Sabeet and Trix. There are no accounts, no sign-in and no servers of our own: your scores and settings stay on your device. The only thing that talks to the internet is advertising in the free version.</p>
+
+        <h2>What stays on your device</h2>
+        <ul class="doc-list">
+          <li><strong>Scores, history and statistics</strong> are stored in the app's local storage and are never sent anywhere.</li>
+          <li><strong>Location (optional):</strong> if you turn on prayer-time alerts, the app asks for location permission to compute prayer times on the device itself. Your location never leaves the device; you can turn the feature off or revoke the permission in iOS Settings at any time.</li>
+          <li><strong>Camera and Photos (optional):</strong> the "ace photo" feature takes a picture after a win and saves it to your Photos library. Photos are never uploaded.</li>
+        </ul>
+
+        <h2>Advertising</h2>
+        <p>The free version shows ads through Google AdMob. When an ad is shown, Google may collect your device's advertising identifier (if you allow tracking), IP address, device information and ad-interaction data, as described in the <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a>. On first launch iOS asks whether you allow tracking; if you decline, non-personalized ads are shown. You can change this later in iOS Settings › Privacy &amp; Security › Tracking.</p>
+
+        <h2>Remove Ads purchase</h2>
+        <p>"Remove Ads" is a one-time in-app purchase handled by Apple. We never receive payment details; only the fact that the purchase was made is stored on your device, and it can be restored on any device signed in with the same Apple ID using "Restore Purchases".</p>
+
+        <h2>What we don't do</h2>
+        <ul class="doc-list">
+          <li>We don't collect player names, scores or any personal data.</li>
+          <li>We don't use analytics or tracking tools of our own.</li>
+          <li>We don't sell data and don't share it with anyone, apart from what Google collects to serve ads as described above.</li>
+        </ul>
+
+        <h2>Children</h2>
+        <p>The app is not directed at children under 13 and we do not knowingly collect any data from them.</p>
+
+        <h2>Changes</h2>
+        <p>If this policy changes, the new version will be published here with its update date.</p>
+
+        <h2>Contact</h2>
+        <p>Privacy questions: <a href="mailto:nawaf@alarifi.group">nawaf@alarifi.group</a></p>
+'''
+
+
+
+def bilingual(ar, en):
+    # keep "Apple ID" on one line inside right-to-left text (markup only, the words are unchanged)
+    ar = ar.replace('Apple ID', '<span class="nobr">Apple ID</span>')
+    return (f'      <section class="doc-part" lang="ar" dir="rtl">\n{ar}      </section>\n'
+            f'      <section class="doc-part" lang="en" dir="ltr">\n{en}      </section>')
+
+
+def build_ansure_docs(app):
+    page(path='ansure/support.html', root='../', title_en='Ansure support', title_ar='الدعم | أنشر',
+         desc='Support for Ansure (أنشر), the scorekeeper for Baloot, Bint Al-Sabeet and Trix. Email nawaf@alarifi.group.',
+         canonical='https://alarifi.group/ansure/support',
+         body=sheet(app, 'support', bilingual(ANSURE_SUPPORT_AR, ANSURE_SUPPORT_EN)))
+    page(path='ansure/privacy.html', root='../', title_en='Ansure privacy policy', title_ar='سياسة الخصوصية | أنشر',
+         desc='Privacy policy for Ansure (أنشر) by Alarifi Group.',
+         canonical='https://alarifi.group/ansure/privacy',
+         body=sheet(app, 'privacy', bilingual(ANSURE_PRIVACY_AR, ANSURE_PRIVACY_EN)))
+
+
 # ---------------------------------------------------------------- 404
 def build_404():
     body = f'''<main class="lost wrap">
@@ -343,5 +504,7 @@ def build_404():
 build_home()
 for a in APPS:
     build_app(a)
-build_reddot_docs(APPS[0])
+BY_SLUG = {a['slug']: a for a in APPS}
+build_reddot_docs(BY_SLUG['reddot'])
+build_ansure_docs(BY_SLUG['ansure'])
 build_404()
