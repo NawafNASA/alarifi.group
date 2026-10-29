@@ -391,7 +391,7 @@ ANSURE_SUPPORT_AR = '''\
 
 ANSURE_SUPPORT_EN = '''\
         <h2>Support (English)</h2>
-        <p>Questions or problems? Email <a href="mailto:nawaf@alarifi.group">nawaf@alarifi.group</a> with your device model and iOS version. Privacy policy: <a href="privacy">privacy.html</a>.</p>
+        <p>Questions or problems? Email <a href="mailto:nawaf@alarifi.group">nawaf@alarifi.group</a> with your device model and iOS version. Privacy policy: <a href="privacy">Privacy policy</a>.</p>
 '''
 
 ANSURE_PRIVACY_AR = '''\
